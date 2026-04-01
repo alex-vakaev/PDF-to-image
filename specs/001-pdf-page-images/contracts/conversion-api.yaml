@@ -1,0 +1,87 @@
+openapi: 3.0.3
+info:
+  title: PDF to Images API
+  version: 1.0.0
+paths:
+  /v1/convert:
+    post:
+      summary: Convert PDF pages to images
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [pdf_base64]
+              properties:
+                pdf_base64:
+                  type: string
+                  description: Base64-encoded PDF content
+                output_format:
+                  type: string
+                  enum: [png, jpeg]
+                  default: png
+                quality_dpi:
+                  type: integer
+                  minimum: 300
+                  default: 300
+      responses:
+        "200":
+          description: Conversion success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConversionSuccessResponse"
+        "400":
+          description: Validation or processing error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConversionErrorResponse"
+components:
+  schemas:
+    PageImage:
+      type: object
+      required: [page_number, format, image_data]
+      properties:
+        page_number:
+          type: integer
+          minimum: 1
+        format:
+          type: string
+          enum: [png, jpeg]
+        image_data:
+          type: string
+          description: Base64-encoded page image
+    ConversionSuccessResponse:
+      type: object
+      required: [status, page_count, pages, message, request_id]
+      properties:
+        status:
+          type: string
+          enum: [success]
+        page_count:
+          type: integer
+          minimum: 1
+        pages:
+          type: array
+          items:
+            $ref: "#/components/schemas/PageImage"
+        message:
+          type: string
+        request_id:
+          type: string
+    ConversionErrorResponse:
+      type: object
+      required: [status, error_code, message, request_id]
+      properties:
+        status:
+          type: string
+          enum: [error]
+        error_code:
+          type: string
+          enum: [INPUT_NOT_FOUND, PDF_INVALID, PDF_PASSWORD_REQUIRED, INTERNAL_ERROR]
+        message:
+          type: string
+        request_id:
+          type: string

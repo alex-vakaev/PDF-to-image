@@ -1,0 +1,5 @@
+fastapi
+uvicorn
+pypdfium2
+Pillow
+pydantic
