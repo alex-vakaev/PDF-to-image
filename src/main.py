@@ -16,7 +16,22 @@ def _build_logger() -> None:
 
 _build_logger()
 
-app = FastAPI(title=os.getenv("APP_NAME", "pdf-to-images-service"))
+app = FastAPI(
+    title=os.getenv("APP_NAME", "pdf-to-images-service"),
+    description=(
+        "Сервис конвертирует PDF в изображения страниц.\n\n"
+        "- `/v1/convert`: принимает JSON с `pdf_base64`, возвращает JSON с `pages[]`.\n"
+        "- `/v1/convert/binary`: принимает бинарный PDF, возвращает ZIP с изображениями."
+    ),
+    version="1.1.0",
+    docs_url="/swagger",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json",
+    contact={
+        "name": "PDF to Images API",
+        "url": "https://github.com/alex-vakaev/PDF-to-image",
+    },
+)
 app.include_router(conversion_router)
 
 
