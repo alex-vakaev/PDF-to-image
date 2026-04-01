@@ -41,6 +41,18 @@ Invoke-RestMethod -Method POST `
   -Body $body
 ```
 
+### Binary PDF -> Binary PNG (separate endpoint)
+
+```bash
+curl -X POST "http://localhost:8000/v1/convert/binary" \
+  -F "pdf_file=@./sample.pdf" \
+  -F "output_format=png" \
+  -F "quality_dpi=300" \
+  -o pages.zip
+```
+
+Содержимое `pages.zip`: `page-0001.png`, `page-0002.png`, ...
+
 ## 4) Validate response
 
 - `status` должен быть `success`

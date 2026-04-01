@@ -38,6 +38,46 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ConversionErrorResponse"
+  /v1/convert/binary:
+    post:
+      summary: Convert binary PDF to binary images archive
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [pdf_file]
+              properties:
+                pdf_file:
+                  type: string
+                  format: binary
+                output_format:
+                  type: string
+                  enum: [png, jpeg]
+                  default: png
+                quality_dpi:
+                  type: integer
+                  minimum: 300
+                  default: 300
+      responses:
+        "200":
+          description: ZIP archive with page images
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+        "400":
+          description: Validation or processing error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConversionErrorResponse"
 components:
   schemas:
     PageImage:
